@@ -7,20 +7,35 @@ if (!defined('GLPI_ROOT')) {
 class PluginBondsBond extends CommonDBTM {
 
    static function getTypeName($nb = 0) {
-      return __('Bonds', 'bonds');
+      return _n('Bond', 'Bonds', $nb, 'bonds');
    }
+
 
    static function canCreate() {
       return true;
    }
 
+
    static function canView() {
       return true;
    }
 
-   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      return __('Bonds', 'bonds');
+
+   static function countForItem(CommonDBTM $item) {
+      return countElementsInTable(
+         self::getTable(),
+         "`asset_type`='".$item->getType()."' AND `asset_id` = '".$item->getID()."'"
+      );
    }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      if ($_SESSION['glpishow_count_on_tabs'])
+         return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
+
+      return self::getTypeName(2);
+   }
+
 
    static function displayTabContentForItem (CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 

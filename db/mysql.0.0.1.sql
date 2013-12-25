@@ -8,4 +8,4 @@ CREATE TABLE `glpi_plugin_bonds_bonds` (
   PRIMARY KEY (`id`),
   KEY `asset_index` (`asset_id`,`asset_type`),
   KEY `connected_id` (`connected_to`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
