@@ -9,15 +9,9 @@ function plugin_init_bonds() {
        array( "addtabon" => $types )
    );
 
-/*
-   $PLUGIN_HOOKS['menu_entry']['pdu'] = 'front/model.php';
    foreach ($types as $type) {
-      $PLUGIN_HOOKS['item_purge']['pdu'][$type] = 'plugin_item_purge_pdu';
+      $PLUGIN_HOOKS['item_purge']['bonds'][$type] = 'plugin_item_purge_bonds';
    }
-
-   // Massive Action definition
-   $PLUGIN_HOOKS['use_massive_action']['pdu'] = 1;
-*/
 
    // CSRF compliance : All actions must be done via POST and forms closed by Html::closeForm();
    $PLUGIN_HOOKS['csrf_compliant']['bonds'] = true;
@@ -27,7 +21,7 @@ function plugin_init_bonds() {
 function plugin_version_bonds() {
 
    return array('name'           => 'Bonds',
-                'version'        => '0.0.1',
+                'version'        => '0.0.2',
                 'author'         => 'Vadim Pisarev',
                 'license'        => 'GPLv2+',
                 'minGlpiVersion' => '0.84');// For compatibility / no install in version < 0.80
