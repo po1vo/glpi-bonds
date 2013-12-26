@@ -31,18 +31,18 @@ function plugin_bonds_uninstall() {
 }
 
 function plugin_item_purge_bonds($item) {
-   $PluginPduModel = new PluginPduModel;
+   $PluginBondsBond = new PluginBondsBond;
 
-   if (!$PluginPduModel->getBondsFromIdAndType(
+   if (!$PluginBondsBond->getBondsFromIdAndType(
          $item->getID(),
          $item->getType() )
    )
       return false;
 
    $connected_to = $this->getField('connected_to');
-   $PluginPduModel->deleteFromDB();
-   $PluginPduModel->getFromDB($connected_to);
-   $PluginPduModel->deleteFromDB();
+   $PluginBondsBond->deleteFromDB();
+   $PluginBondsBond->getFromDB($connected_to);
+   $PluginBondsBond->deleteFromDB();
 
    return true; 
 }
