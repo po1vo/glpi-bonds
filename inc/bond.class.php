@@ -144,8 +144,8 @@ class PluginBondsBond extends CommonDBTM {
       foreach($data as $key => $assoc) {
          echo '<tr class="tab_bg_'.(($n%2==0)?"2":"1").'">';
          echo '<td><input type="checkbox" name="item['.$key.']" value="1"></td>';
-         echo '<td>'.$assoc['outlet_id'].'</td>';
-         echo '<td>'.$assoc['outlet_type'].'</td>';
+         echo '<td class="center">'.$assoc['outlet_id'].'</td>';
+         echo '<td class="center">'.$assoc['outlet_type'].'</td>';
 
          $self->showLine($assoc['connected_to']);
 
