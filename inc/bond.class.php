@@ -140,7 +140,7 @@ class PluginBondsBond extends CommonDBTM {
       echo  '</tr>';
 
       $n = 1;
-      $data = $self->getBondsFromIdAndType( $item->getID(), $item->getType() );
+      $data = $self->getBondsFromIdAndType( $item->getID(), $item->getType(), "ORDER BY `outlet_id`" );
       foreach($data as $key => $assoc) {
          echo '<tr class="tab_bg_'.(($n%2==0)?"2":"1").'">';
          echo '<td><input type="checkbox" name="item['.$key.']" value="1"></td>';
@@ -190,8 +190,8 @@ class PluginBondsBond extends CommonDBTM {
    }
 
 
-   function getBondsFromIdAndType($asset_id, $asset_type) {
-      $data = $this->find("`asset_id`='$asset_id' AND `asset_type`='$asset_type'");
+   function getBondsFromIdAndType($asset_id, $asset_type, $option = '') {
+      $data = $this->find("`asset_id`='$asset_id' AND `asset_type`='$asset_type'" . $option);
 
       return $data;
    }
