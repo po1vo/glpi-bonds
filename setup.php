@@ -21,7 +21,7 @@ function plugin_init_bonds() {
 function plugin_version_bonds() {
 
    return array('name'           => 'Bonds',
-                'version'        => '0.0.2',
+                'version'        => '0.0.3',
                 'author'         => 'Vadim Pisarev',
                 'license'        => 'GPLv2+',
                 'minGlpiVersion' => '0.84');// For compatibility / no install in version < 0.80

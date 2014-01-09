@@ -35,9 +35,7 @@ Html::header_nocache();
 Plugin::load('bonds',true);
 
 $PluginBondsBond = new PluginBondsBond;
-
-$prefix = (isset($_POST['prefix_'])) ? $_POST['prefix_'] : '';
-$bonds = $PluginBondsBond->getBondsFromIdAndType($_POST[$prefix."asset_id"], $_POST[$prefix."asset_type"]);
+$bonds = $PluginBondsBond->getBondsFromIdAndType($_POST['asset_id'], $_POST['asset_type']);
 
 $used_outlets = array();
 foreach ($bonds as $key => $val) {
@@ -55,6 +53,5 @@ Dropdown::showFromArray(
       'used' => $used_outlets,
    )
 ); 
-
 
 ?>

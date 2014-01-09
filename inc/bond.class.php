@@ -63,6 +63,14 @@ class PluginBondsBond extends CommonDBTM {
          array( 'rand' => $rand )
       );
 
+      echo "<script type='text/javascript'>";
+      echo "var el = Ext.get('dropdown_outlet_type".$rand."');";
+      echo "el.on('change', function() {";
+      echo "   Ext.get('show_foreign_assets".$rand."').dom.innerHTML='';";
+      echo "   Ext.get('dropdown_foreign_asset_type".$rand."').dom.value=0;";
+      echo "});";
+      echo "</script>";
+
       $params = array(
          'outlet_type' => '__VALUE__',
          'asset_id'    => $item->getID(),
@@ -72,7 +80,8 @@ class PluginBondsBond extends CommonDBTM {
       );
 
       Ajax::updateItemOnSelectEvent(
-         "dropdown_outlet_type$rand", "show_outlet_id$rand",
+         "dropdown_outlet_type$rand",
+         "show_outlet_id$rand",
          $CFG_GLPI["root_doc"]."/plugins/bonds/ajax/dropdownOutlets.php",
          $params
       );
@@ -109,13 +118,14 @@ class PluginBondsBond extends CommonDBTM {
          'rand'    => $rand,
          'myname'  => 'foreign_asset_id'
       );
+
       Ajax::updateItemOnSelectEvent(
-         "dropdown_foreign_asset_type$rand", "show_foreign_asset_id$rand",
+         "dropdown_foreign_asset_type$rand", "show_foreign_assets$rand",
          $CFG_GLPI["root_doc"]."/plugins/bonds/ajax/dropdownAllItems.php",
          $params
       );
 
-      echo "<span id='show_foreign_asset_id$rand'>&nbsp;</span>\n";
+      echo "<span id='show_foreign_assets$rand'>&nbsp;</span>\n";
       echo    "</td>";
       echo    "<td><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'></td>\n";
       echo   '</tr>';
@@ -191,6 +201,9 @@ class PluginBondsBond extends CommonDBTM {
 
 
    function getBondsFromIdAndType($asset_id, $asset_type, $option = '') {
+      if (empty($asset_id) || empty($asset_type))
+         return array();
+
       $data = $this->find("`asset_id`='$asset_id' AND `asset_type`='$asset_type'" . $option);
 
       return $data;

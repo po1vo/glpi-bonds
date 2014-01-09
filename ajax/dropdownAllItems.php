@@ -62,26 +62,15 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $use_ajax = true;
    }
 
-   $paramsallitems = array('searchText'          => '__VALUE__',
-                           'table'               => $table,
-                           'itemtype'            => $_POST["idtable"],
-                           'rand'                => $rand,
-                           'myname'              => $_POST["myname"],
-                           'displaywith'         => array('serial'),
-                           'display_emptychoice' => true,
-                           'update_item'         => array(
-                              'value_fieldname' => 'foreign_asset_id',
-                              'to_update'       => "show_foreign_outlet_id$rand",
-                              'url'             => $CFG_GLPI["root_doc"]."/plugins/bonds/ajax/dropdownOutlets.php",
-                              'moreparams'      => array(
-                                 'asset_type'   => $_POST['idtable'],
-                                 'rand'         => $rand,
-                                 'myname'       => 'foreign_outlet_id',
-                                 'prefix_'      => 'foreign_',
-                                 'foreign_asset_type' => $_POST["idtable"],
-                              )
-                           )
-                     );
+   $paramsallitems = array(
+      'searchText'          => '__VALUE__',
+      'table'               => $table,
+      'itemtype'            => $_POST["idtable"],
+      'rand'                => $rand,
+      'myname'              => $_POST["myname"],
+      'displaywith'         => array('serial'),
+      'display_emptychoice' => true,
+   );
 
    if (isset($_POST['value'])) {
       $paramsallitems['value'] = $_POST['value'];
@@ -93,14 +82,31 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $paramsallitems['condition'] = stripslashes($_POST['condition']);
    }
 
-   $default = "<select name='".$_POST["myname"]."'><option value='0'>".Dropdown::EMPTY_VALUE.
+   $default = "<select id='dropdown_".$_POST["myname"].$rand."'><option value='0'>".Dropdown::EMPTY_VALUE.
               "</option></select>";
    Ajax::dropdown($use_ajax, "/ajax/$link", $paramsallitems, $default, $rand);
 
    echo "&nbsp;outlet&nbsp;#&nbsp;";
    echo "<span id='show_foreign_outlet_id$rand'>";
-   echo "<select name='dropdown_foreign_outlet_id$rand'><option value='0'>".Dropdown::EMPTY_VALUE.  "</option></select>";
+   echo "<select id='dropdown_foreign_outlet_id$rand' name='foreign_outlet_id'><option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
    echo "</span>";
+
+   echo "<script type='text/javascript'>";
+   echo "var el = Ext.fly('show_foreign_assets".$rand."');";
+   echo "el.on('change', function() {";
+   echo "   var updr = Ext.fly('dropdown_foreign_outlet_id".$rand."').getUpdater();";
+   echo "   updr.update({";
+   echo "      url: '" . $CFG_GLPI["root_doc"] . "/plugins/bonds/ajax/dropdownOutlets.php',";
+   echo "      params: {";
+   echo "         asset_id:    Ext.get('dropdown_foreign_asset_id$rand').getValue(),";
+   echo "         asset_type: '" . $_POST['idtable'] . "',";
+   echo "         rand:       '$rand',";
+   echo "         myname:     'foreign_outlet_id',";
+   echo "         outlet_type: Ext.get('dropdown_outlet_type$rand').getValue(),";
+   echo "      }";
+   echo "   });";
+   echo "});";
+   echo "</script>";
 
 }
 ?>
