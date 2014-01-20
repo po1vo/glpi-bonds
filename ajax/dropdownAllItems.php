@@ -92,9 +92,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    echo "</span>";
 
    echo "<script type='text/javascript'>";
-   echo "var el = Ext.fly('show_foreign_assets".$rand."');";
+   echo "var el = Ext.fly('results_$rand');";
    echo "el.on('change', function() {";
-   echo "   var updr = Ext.fly('dropdown_foreign_outlet_id".$rand."').getUpdater();";
+   echo "   var updr = Ext.fly('dropdown_foreign_outlet_id$rand').getUpdater();";
    echo "   updr.update({";
    echo "      url: '" . $CFG_GLPI["root_doc"] . "/plugins/bonds/ajax/dropdownOutlets.php',";
    echo "      params: {";
