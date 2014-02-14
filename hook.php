@@ -6,7 +6,7 @@ function plugin_bonds_install() {
    if (
       (!TableExists("glpi_plugin_bonds_bonds"))
    ) {
-      $DB->runFile(dirname(__FILE__) . "/db/mysql.0.0.1.sql") or
+      $DB->runFile(dirname(__FILE__) . "/db/mysql.0.0.x.sql") or
       Html::displayErrorAndDie(
          "Error installing Bonds plugin ". $DB->error()
       );
