@@ -46,11 +46,12 @@ foreach ($bonds as $key => $val) {
 }
 
 Dropdown::showFromArray(
-   (empty($_POST['myname'])) ? 'outlet_id' : $_POST['myname'],
+   (empty($_POST['name'])) ? 'outlet_id' : $_POST['name'],
    array_combine( range(1,50), range(1,50) ),
    array(
       'rand' => $_POST["rand"],
       'used' => $used_outlets,
+      'width' => 'auto',
    )
 ); 
 

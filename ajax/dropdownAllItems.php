@@ -43,10 +43,10 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    $table = getTableForItemType($_POST["idtable"]);
 
    // Link to user for search only > normal users
-   $link = "dropdownValue.php";
+   $link = "getDropdownValue.php";
 
    if ($_POST["idtable"] == 'User') {
-      $link = "dropdownUsers.php";
+      $link = "getDropdownUsers.php";
    }
 
    if (isset($_POST['rand'])) {
@@ -55,22 +55,14 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $rand = mt_rand();
    }
 
-   $use_ajax = false;
+   $field_id = Html::cleanId('dropdown_'.$_POST["name"].$rand);
 
-   if ($CFG_GLPI["use_ajax"]
-       && (countElementsInTable($table) > $CFG_GLPI["ajax_limit_count"])) {
-      $use_ajax = true;
-   }
-
-   $paramsallitems = array(
-      'searchText'          => '__VALUE__',
-      'table'               => $table,
-      'itemtype'            => $_POST["idtable"],
-      'rand'                => $rand,
-      'myname'              => $_POST["myname"],
-      'displaywith'         => array('serial'),
-      'display_emptychoice' => true,
-   );
+   $p        = array('value'               => 0,
+                     'valuename'           => Dropdown::EMPTY_VALUE,
+                     'itemtype'            => $_POST["idtable"],
+                     'display_emptychoice' => true,
+                     'width'               => '20em',
+                     'displaywith'         => array('serial'));
 
    if (isset($_POST['value'])) {
       $paramsallitems['value'] = $_POST['value'];
@@ -82,31 +74,34 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $paramsallitems['condition'] = stripslashes($_POST['condition']);
    }
 
-   $default = "<select id='dropdown_".$_POST["myname"].$rand."'><option value='0'>".Dropdown::EMPTY_VALUE.
-              "</option></select>";
-   Ajax::dropdown($use_ajax, "/ajax/$link", $paramsallitems, $default, $rand);
+   echo Html::jsAjaxDropdown($_POST["name"], $field_id, $CFG_GLPI['root_doc']."/ajax/".$link, $p);
 
    echo "&nbsp;outlet&nbsp;#&nbsp;";
-   echo "<span id='show_foreign_outlet_id$rand'>";
-   echo "<select id='dropdown_foreign_outlet_id$rand' name='foreign_outlet_id'><option value='0'>".Dropdown::EMPTY_VALUE."</option></select>";
-   echo "</span>";
+   echo "<span id=\"show_foreign_outlet_id$rand\">";
 
-   echo "<script type='text/javascript'>";
-   echo "var el = Ext.fly('results_$rand');";
-   echo "el.on('change', function() {";
-   echo "   var updr = Ext.fly('dropdown_foreign_outlet_id$rand').getUpdater();";
-   echo "   updr.update({";
-   echo "      url: '" . $CFG_GLPI["root_doc"] . "/plugins/bonds/ajax/dropdownOutlets.php',";
-   echo "      params: {";
-   echo "         asset_id:    Ext.get('dropdown_foreign_asset_id$rand').getValue(),";
-   echo "         asset_type: '" . $_POST['idtable'] . "',";
-   echo "         rand:       '$rand',";
-   echo "         myname:     'foreign_outlet_id',";
-   echo "         outlet_type: Ext.get('dropdown_outlet_type$rand').getValue(),";
-   echo "      }";
-   echo "   });";
-   echo "});";
-   echo "</script>";
+   Dropdown::showFromArray(
+      "foreign_outlet_id",
+      array( '0' => Dropdown::EMPTY_VALUE ),
+      array( 'rand' => $rand, 'width' => 'auto' )
+   );
+
+echo <<< EOT
+   </span>
+   <script type='text/javascript'>
+   $("#dropdown_foreign_asset_id$rand").change(function() {
+      $("#show_foreign_outlet_id$rand").load(
+         "{$CFG_GLPI["root_doc"]}/plugins/bonds/ajax/dropdownOutlets.php",
+         {
+            asset_id:    $("#dropdown_foreign_asset_id$rand").val(),
+            asset_type:  "{$_POST['idtable']}",
+            rand:        $rand,
+            name:        "foreign_outlet_id",
+            outlet_type: $("#dropdown_outlet_type$rand").val(),
+         }
+      )
+   });
+   </script>
+EOT;
 
 }
 ?>

@@ -53,32 +53,39 @@ class PluginBondsBond extends CommonDBTM {
       echo  '<table class="tab_cadre_fixe">';
       echo   '<tr class="tab_bg_2">';
       echo    '<td>';
+
+      /*
+         Connect [outlet_types]
+      */
+
       _e('Connect');
       echo "&nbsp;";
 
-      $outlet_types  = array( '0' => Dropdown::EMPTY_VALUE );
-      $outlet_types += array_combine(self::listOutletTypes(), self::listOutletTypes());
+      $outlet_types = array_combine(self::listOutletTypes(), self::listOutletTypes());
+      array_unshift( $outlet_types, Dropdown::EMPTY_VALUE );
 
       Dropdown::showFromArray(
          "outlet_type",
          $outlet_types,
-         array( 'rand' => $rand )
+         array( 'rand' => $rand, 'width' => 'auto' )
       );
 
-      echo "<script type='text/javascript'>";
-      echo "var el = Ext.get('dropdown_outlet_type".$rand."');";
-      echo "el.on('change', function() {";
-      echo "   Ext.get('show_foreign_assets".$rand."').dom.innerHTML='';";
-      echo "   Ext.get('dropdown_foreign_asset_type".$rand."').dom.value=0;";
-      echo "});";
-      echo "</script>";
+echo <<< EOT
+   <script type='text/javascript'>
+   $("#dropdown_outlet_type$rand").change(function() {
+      $("#show_foreign_assets$rand").html("");
+      $("#dropdown_foreign_asset_type$rand").val('0');
+   });
+   </script>
+EOT;
 
       $params = array(
          'outlet_type' => '__VALUE__',
          'asset_id'    => $item->getID(),
          'asset_type'  => $item->getType(),
          'rand'        => $rand,
-         'myname'      => 'outlet_id'
+         'name'        => 'outlet_id',
+         'width'       => 'auto'
       );
 
       Ajax::updateItemOnSelectEvent(
@@ -89,6 +96,11 @@ class PluginBondsBond extends CommonDBTM {
       );
 
       echo "&nbsp;";
+
+      /*
+         outlet # [outlet_id]
+      */
+
       _e('outlet #');
       echo "&nbsp;";
       echo "<span id='show_outlet_id$rand'>";
@@ -96,38 +108,54 @@ class PluginBondsBond extends CommonDBTM {
       Dropdown::showFromArray(
          "outlet_id", 
          array( '0' => Dropdown::EMPTY_VALUE ),
-         array( 'rand' => $rand )
+         array( 'rand' => $rand, 'width' => 'auto' )
       );
 
       echo "</span>";
       echo "&nbsp;";
+
+      /*
+         to [foreign_asset_type]
+      */
       _e('to');
       echo "&nbsp;";
 
-      $connected_types = array( '0' => Dropdown::EMPTY_VALUE );
-      foreach(self::getAssetClasses() as $class_name) {
-         $connected_types[$class_name] = $class_name;
-      }
+      $foreign_asset_types = array_combine(self::getAssetClasses(), self::getAssetClasses());
+      array_unshift($foreign_asset_types, Dropdown::EMPTY_VALUE);
 
       Dropdown::showFromArray(
          "foreign_asset_type", 
-         $connected_types,
-         array( 'rand' => $rand )
+         $foreign_asset_types,
+         array( 'rand' => $rand, 'width' => 'auto' )
       );
 
       $params = array(
          'idtable' => '__VALUE__',
          'rand'    => $rand,
-         'myname'  => 'foreign_asset_id'
+         'name'  => 'foreign_asset_id'
       );
 
       Ajax::updateItemOnSelectEvent(
-         "dropdown_foreign_asset_type$rand", "show_foreign_assets$rand",
+         "dropdown_foreign_asset_type$rand",
+         "show_foreign_assets$rand",
          $CFG_GLPI["root_doc"]."/plugins/bonds/ajax/dropdownAllItems.php",
          $params
       );
 
+      /*
+         [foreign_asset_id]
+      */
+
+      echo "&nbsp;";
       echo "<span id='show_foreign_assets$rand'>&nbsp;</span>\n";
+
+      /*
+         [foreign_outlet_id]
+      */
+
+      // nothing here
+
+
       echo    "</td>";
       echo    "<td><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'></td>\n";
       echo   '</tr>';
