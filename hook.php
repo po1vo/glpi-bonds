@@ -33,18 +33,31 @@ function plugin_bonds_uninstall() {
 function plugin_item_purge_bonds($item) {
    $PluginBondsBond = new PluginBondsBond;
 
-   if (!$PluginBondsBond->getBondsFromIdAndType(
+   $data = $PluginBondsBond->getBondsFromIdAndType(
          $item->getID(),
-         $item->getType() )
-   )
+         $item->getType()
+   );
+
+   if (empty($data))
       return false;
 
-   $connected_to = $this->getField('connected_to');
-   $PluginBondsBond->deleteFromDB();
-   $PluginBondsBond->getFromDB($connected_to);
-   $PluginBondsBond->deleteFromDB();
+   foreach($data as $h) {
+      $PluginBondsBond->deleteBond($h);
+   }
 
    return true; 
+}
+
+function plugin_bonds_postinit() {
+   global $PLUGIN_HOOKS;
+
+   foreach (PluginBondsBond::getTypes(true) as $type) {
+      CommonGLPI::registerStandardTab($type, 'PluginBondsBond');
+      $PLUGIN_HOOKS['item_purge']['bonds'][$type] = 'plugin_item_purge_bonds';
+   }
+
+   if (class_exists('PluginRacksRack'))
+      CommonGLPI::registerStandardTab('PluginRacksRack' ,'PluginBondsGraph');
 }
 
 ?>

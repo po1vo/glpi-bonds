@@ -3,18 +3,17 @@
 // Init the hooks of the plugins -Needed
 function plugin_init_bonds() {
    global $PLUGIN_HOOKS,$CFG_GLPI;
-   static $types = array( 'Computer','NetworkEquipment','Peripheral' );
 
-   Plugin::registerClass('PluginBondsBond', 
-       array( "addtabon" => $types )
-   );
+   Plugin::registerClass('PluginBondsBond');
 
-   foreach ($types as $type) {
-      $PLUGIN_HOOKS['item_purge']['bonds'][$type] = 'plugin_item_purge_bonds';
-   }
+   if (class_exists('PluginRacksRack'))
+      Plugin::registerClass('PluginBondsGraph');
+
+   $PLUGIN_HOOKS['post_init']['bonds'] = 'plugin_bonds_postinit';
 
    // CSRF compliance : All actions must be done via POST and forms closed by Html::closeForm();
    $PLUGIN_HOOKS['csrf_compliant']['bonds'] = true;
+
 }
 
 // Get the name and the version of the plugin - Needed
@@ -33,7 +32,7 @@ function plugin_bonds_check_prerequisites() {
    return true;
 }
 
-function plugin_bonds_check_config($verbose=false) {
+function plugin_bonds_check_config() {
    return true;
 }
 

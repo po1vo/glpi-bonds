@@ -5,6 +5,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginBondsBond extends CommonDBTM {
+   static $types = array( 'Computer','NetworkEquipment','Peripheral' );
+
 
    static function getTypeName($nb = 0) {
       return _n('Bond', 'Bonds', $nb, 'bonds');
@@ -234,8 +236,8 @@ class PluginBondsBond extends CommonDBTM {
          'foreign_asset_id',
          'foreign_outlet_id',
       );
-      $this_input = array();
-      $foreign_input = array();
+      $source = array();
+      $target = array();
 
       foreach($fields as $field) {
          if (!isset($input[$field]) || empty($input[$field]))
@@ -243,26 +245,34 @@ class PluginBondsBond extends CommonDBTM {
 
          if (preg_match("/^foreign_/",$field)) {
             $f = str_replace("foreign_", '', $field);
-            $foreign_input[$f] = $input[$field];
+            $target[$f] = $input[$field];
          } else {
-            $this_input[$field] = $input[$field];
+            $source[$field] = $input[$field];
          }
       }
 
-      $this_id = $this->add($this_input);
+      $this->_addBond($source, $target);
+   }
 
-      if (empty($this_id))
+   function _addBond(array $source, array $target, $outlet_type='Power') {
+      if(empty($source['outlet_type']))
+         $source['outlet_type'] = $outlet_type;
+
+      $target['outlet_type'] = $source['outlet_type'];
+
+      $source_id = $this->add($source);
+
+      if (empty($source_id))
          return false;
 
-      $foreign_input['outlet_type']  = $this_input['outlet_type'];
-      $foreign_input['connected_to'] = $this_id;
-      $foreign_id = $this->add($foreign_input);
+      $target['connected_to'] = $source_id;
+      $target_id = $this->add($target);
 
-      if (empty($foreign_id))
+      if (empty($target_id))
          return false;
 
-      $this->fields['id'] = $this_id;
-      $this->fields['connected_to'] = $foreign_id;
+      $this->fields['id'] = $source_id;
+      $this->fields['connected_to'] = $target_id;
       $this->updateInDB(array('connected_to'));
    }
 
@@ -274,6 +284,79 @@ class PluginBondsBond extends CommonDBTM {
       $this->delete($input);
       $this->delete(array('id' => $connected_to));
    }
+
+
+   static function updatePowerBonds (array $input) {
+      $PluginBondsBond = new PluginBondsBond;
+
+      foreach ($input as $_native => $_foreign) {
+         $data = array();
+         $d = array();
+         foreach (array($_native, $_foreign) as $a) {
+            if(!preg_match('/^(\w+)_(\d+)_(\d+)$/', $a, $matches))
+               break;
+ 
+            $res = $PluginBondsBond->find("
+               `asset_id`='".$matches[2]."' 
+                AND `asset_type`='".$matches[1]."'
+                AND `outlet_id`='".$matches[3]."'
+                AND `outlet_type`='Power'");
+ 
+            if(!empty($res))
+               $PluginBondsBond->deleteBond(reset($res));
+
+            $d = array_merge( $d, array_slice($matches, 1) );
+         }
+
+         if (sizeof($d) != 6)
+            continue;
+ 
+         $data = array_combine(
+            array(
+               'asset_type',
+               'asset_id',
+               'outlet_id',
+               'foreign_asset_type',
+               'foreign_asset_id',
+               'foreign_outlet_id'
+            ),
+            $d
+         );
+         $data['outlet_type'] = 'Power';
+
+         $PluginBondsBond->addBond($data);
+      }
+   }
+
+   static function registerType($type) {
+      if (!in_array($type, self::$types)) {
+         self::$types[] = $type;
+      }
+   }
+
+
+   static function getTypes($all=false) {
+
+      if ($all) {
+         return self::$types;
+      }
+
+      // Only allowed types
+      $types = self::$types;
+
+      foreach ($types as $key => $type) {
+         if (!class_exists($type)) {
+            continue;
+         }
+
+         $item = new $type();
+         if (!$item->canView()) {
+            unset($types[$key]);
+         }
+      }
+      return $types;
+   }
+
 }
 
 ?>

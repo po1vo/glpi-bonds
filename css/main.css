@@ -1,0 +1,91 @@
+body {
+   font-family: sans-serif;
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
+path, ._jsPlumb_endpoint { cursor:pointer; }
+.dropHover { border:1px dotted red; }
+
+._jsPlumb_connector { z-index:18; }
+._jsPlumb_endpoint { z-index:19; }
+
+.rack {
+   margin-left: auto;
+   margin-right: auto;
+   border: 1px solid gray;
+   background-color: #f2f2f2;
+   padding: 0;
+   text-align: center;
+}
+
+.unit {
+   min-height: 1.2em;
+   margin: 2px;
+   padding: 2px;
+   background-color: #c5e693;
+   pointer-events: none;
+}
+
+.unit.empty {
+   background-color: #fff;
+}
+
+.device_name {
+   padding-right: 20px;
+   padding-left: 20px;
+   z-index: 30;
+   position: relative;
+   color: black;
+   pointer-events: none;
+}
+
+.psu {
+   width: 1.5em;
+   height: 1.5em;
+}
+
+.pdu {
+   border: 1px solid black;
+   padding: 0;
+   padding-top: 100px;
+   padding-bottom: 10px;
+   position: absolute;
+   background-color: white;
+   cursor: pointer;
+   box-shadow: 1px 1px 1px #888;
+}
+
+.num {
+   font-weight: bold;
+   z-index: 30;
+   color: white;
+   position: relative;
+   font-size: 1em;
+   pointer-events: none;
+}
+
+.block_title {
+   position: absolute;
+   top: 0;
+   right: -1.5em;
+   letter-spacing: 2em;
+   width: 1em;
+   word-wrap: break-word;
+}
+
+.outlet {
+   margin: 6px 2px;
+}
+
+.legend {
+   position: absolute;
+   top: 0;
+   left: 0;
+   max-width: 25em;
+   padding: 0 0 0 2em;
+}
