@@ -126,7 +126,7 @@ EOT;
       Dropdown::showFromArray(
          "foreign_asset_type", 
          $foreign_asset_types,
-         array( 'rand' => $rand, 'width' => 'auto' )
+         array( 'rand' => $rand, 'width' => '10em' )
       );
 
       $params = array(

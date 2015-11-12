@@ -1,7 +1,7 @@
 CREATE TABLE `glpi_plugin_bonds_bonds` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `asset_id` int(11) NOT NULL,
-  `asset_type` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `asset_type` enum('NetworkEquipment','Computer') COLLATE utf8_unicode_ci NOT NULL,
   `outlet_id` smallint(6) NOT NULL,
   `outlet_type` enum('Power','Console') COLLATE utf8_unicode_ci NOT NULL,
   `connected_to` int(11) NOT NULL DEFAULT '0',

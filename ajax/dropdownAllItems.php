@@ -60,7 +60,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    $p        = array('value'               => 0,
                      'valuename'           => Dropdown::EMPTY_VALUE,
                      'itemtype'            => $_POST["idtable"],
-                     'display_emptychoice' => true,
+                     'display_emptychoice' => false,
                      'width'               => '20em',
                      'displaywith'         => array('serial'));
 
