@@ -20,7 +20,7 @@ function plugin_init_bonds() {
 function plugin_version_bonds() {
 
    return array('name'           => 'Bonds',
-                'version'        => '0.0.3',
+                'version'        => '0.0.4',
                 'author'         => 'Vadim Pisarev',
                 'homepage'       => 'http://github.com/po1vo/glpi-bonds/',
                 'license'        => 'GPLv2+',
