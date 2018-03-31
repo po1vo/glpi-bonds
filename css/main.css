@@ -61,12 +61,14 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
 }
 
 .num {
-   font-weight: bold;
    z-index: 30;
    color: white;
    position: relative;
    font-size: 1em;
    pointer-events: none;
+   display: inline-block;
+   width: 100%;
+   text-align: center;
 }
 
 .block_title {
@@ -79,7 +81,8 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
 }
 
 .outlet {
-   margin: 6px 2px;
+   width:  1.5em;
+   height: 1.5em;
 }
 
 .legend {
@@ -88,4 +91,12 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
    left: 0;
    max-width: 25em;
    padding: 0 0 0 2em;
+}
+
+.jtk-connector {
+  z-index: 1;
+}
+
+.jtk-endpoint {
+  z-index: 2;
 }

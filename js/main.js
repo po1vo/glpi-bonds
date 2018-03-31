@@ -5,7 +5,8 @@ jsPlumb.ready(function() {
       Connector   : "Straight",
       Container   : $("body"),
       DragOptions : { cursor: "pointer" },
-      Endpoint    : "Rectangle",
+      Endpoint    : [ "Dot", {"radius": 11} ],
+      PaintStyle  : { strokeWidth: 1, stroke: "black"},
    });
 
    jsPlumb.draggable($(".pdu"));
@@ -13,42 +14,46 @@ jsPlumb.ready(function() {
    var conn4Color;
    endpoints = {};
 
-   jsPlumb.setSuspendDrawing(true);
+   jsPlumb.batch(function() {
+      $(".psu, .outlet").each(function(index){
+         if ( $(this).attr('id') in excludes )
+            return;
 
-   $(".psu, .outlet").each(function(index){
-      if ( $(this).attr('id') in excludes )
-         return;
+         endpoints[$(this).attr('id')] = jsPlumb.addEndpoint( this, {
+            isSource: true,
+            isTarget: true,
+            hoverPaintStyle: {
+               fill: "red",
+               outlineStroke: "white",
+               outlineWidth: 2
+            },
+            connectorHoverStyle: {
+               stroke: "red",
+               strokeWidth: 4
+            },
+         });
+      });
 
-      endpoints[$(this).attr('id')] = jsPlumb.addEndpoint( this, {
-         isSource:true,
-         isTarget:true,
-         hoverPaintStyle: { fillStyle:"#449999" },
-         connectorHoverStyle: {strokeStyle:"#449999"},
-         dropOptions: { tolerance:"touch", hoverClass:"dropHover" },
+      $.each(connections, function( src, dst ) {
+         if ( src in excludes || dst in excludes )
+            return;
+
+         conn4Color = '#'+(Math.random()).toString(16).substr(2,6);
+
+         endpoints[src].setPaintStyle({ fill: conn4Color });
+         endpoints[dst].setPaintStyle({ fill: conn4Color });
+
+         jsPlumb.connect({
+            source: endpoints[src],
+            target: endpoints[dst],
+            deleteEndpointsOnDetach: false,
+            paintStyle: {
+               stroke:      conn4Color,
+               strokeWidth: 3
+            },
+         });
       });
    });
-
-   $.each(connections, function( src, dst ) {
-      if ( src in excludes || dst in excludes )
-         return;
-
-      conn4Color = '#'+(Math.random()).toString(16).substr(2,6);
-
-      endpoints[src].setPaintStyle({ fillStyle: conn4Color });
-      endpoints[dst].setPaintStyle({ fillStyle: conn4Color });
-
-      jsPlumb.connect({
-         source: endpoints[src],
-         target: endpoints[dst],
-         deleteEndpointsOnDetach:false,
-         paintStyle: { 
-            lineWidth   : 4,
-            strokeStyle : conn4Color,
-         },
-      });
-   });
-
-   jsPlumb.setSuspendDrawing(false, true);
 
 
    $(".pdu").dblclick(function() {

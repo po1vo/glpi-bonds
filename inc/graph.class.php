@@ -143,11 +143,13 @@ class PluginBondsGraph extends CommonDBTM {
 
    private function getAllPdus() {
       global $DB;
+      $name = $this->PluginRacksRack->getField('name');
+      $name = str_replace(":","-",$name);
 
       $query = "
          SELECT `id`,`name`
          FROM `glpi_networkequipments`
-         WHERE `name` LIKE 'pdu".$this->PluginRacksRack->getField('name')."%'
+         WHERE `name` LIKE 'pdu-" . $name . "%'
          ORDER BY `name`";
 
       $result = $DB->query($query);
