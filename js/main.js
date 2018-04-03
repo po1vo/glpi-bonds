@@ -62,12 +62,12 @@ jsPlumb.ready(function() {
    $(".pdu").dblclick(function() {
       kids = $(this).children();
       var len = kids.length;
-      jsPlumb.setSuspendDrawing(true);
 
-      for (var i=len; i>1; i--)
-         kids.eq(len-i).detach().insertAfter(kids.last());
+      jsPlumb.batch(function() {
+         for (var i=len; i>1; i--)
+            kids.eq(len-i).detach().insertAfter(kids.last());
+      });
 
-      jsPlumb.setSuspendDrawing(false, true);
       jsPlumb.recalculateOffsets(this);
    });
 
@@ -113,6 +113,11 @@ jsPlumb.ready(function() {
             endpoints[$(c).attr("id")] = jsPlumb.addEndpoint($(c),EndpointOptions);
          }
       });
+   });
 
+   $(".device_name span").dblclick(function(e){
+      e.preventDefault();
+      var url = $(this).attr('url');
+      window.open(url, '_blank');
    });
 });

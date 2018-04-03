@@ -15,7 +15,8 @@
    <div class="block_help">Help
       <ul class="tooltiptext">
          <li>You can move PDUs as you like</li>
-         <li>Double click a PDU to change the order of outlets (buggy)</li>
+         <li>Double click a device in the rack to open it in a new tab</li>
+         <li>Double click a PDU to change the order of outlets (sometimes buggy)</li>
          <li>Inactive outlets mean the outlet is connected to a device beyond this scope</li>
       </ul>
    </div>
@@ -34,7 +35,7 @@
 ?>
    <tr class="unit">
       <td class="unit_number"><?php echo $i; ?></td>
-      <td class="device_name"><?php echo $name; ?></td>
+      <td class="device_name"><span url="<?php echo $url; ?>"><?php echo $name; ?></span></td>
 <?php
          if (isset($outlets) && count($outlets) > 0) {
             $outlets = array_unique( array_merge(range(1, self::MAX_OUTLETS), $outlets));

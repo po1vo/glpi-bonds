@@ -113,6 +113,7 @@ class PluginBondsGraph extends CommonDBTM {
          $this->rack[$pos] = array(
             "items_id" => $data["items_id"],
             "class"    => $class,
+            "url"      => Toolbox::getItemTypeFormURL($class)."?id=".$data["items_id"],
             "size"     => $data["size"],
             "name"     => $item->getField("name"),
             "serial"   => $item->getField("serial"),

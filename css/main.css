@@ -41,7 +41,7 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
    z-index: 30;
    position: relative;
    color: black;
-   pointer-events: none;
+   pointer-events: initial;
 }
 
 .psu {
