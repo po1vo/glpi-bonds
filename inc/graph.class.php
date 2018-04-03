@@ -14,7 +14,7 @@ class PluginBondsGraph extends CommonDBTM {
          AND `t1`.`asset_id`=%d";
 
    const MAX_OUTLET_ID = 24;
-   const MIN_OUTLET_ID = 2;
+   const MIN_OUTLET_ID = 1;
    const MAX_OUTLETS = 2;
    private $PluginRacksRack;
    private $rack;
@@ -159,8 +159,8 @@ class PluginBondsGraph extends CommonDBTM {
    }
 
 
-   /* showing 24 outlets by default, except the 1st outlet
-      if outlet_id > 24 found, show 36 outlets */
+   /* Showing 24 outlets by default, starting with $min_outlet_id.
+      If outlet_id > 24 found, show 42 outlets */
    private function getPdu($param) {
       global $DB;
 
@@ -190,8 +190,10 @@ class PluginBondsGraph extends CommonDBTM {
             'NetworkEquipment_'.$param['id'].'_'.$data['outlet_id'];
       }
 
-      if ($max_outlet_id > 24)
+      if ($max_outlet_id > 24 && $max_outlet_id <= 42)
          $max_outlet_id = 42;
+      else if ($max_outlet_id <= 24)
+         $max_outlet_id = 24;
 
       $this->pdus[$param["id"]] = array(
          'id'            => $param['id'],

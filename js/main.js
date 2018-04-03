@@ -5,9 +5,24 @@ jsPlumb.ready(function() {
       Connector   : "Straight",
       Container   : $("body"),
       DragOptions : { cursor: "pointer" },
-      Endpoint    : [ "Dot", {"radius": 11} ],
+      DropOptions : { tolerance: "touch", hoverClass: "dropHover" },
+      Endpoint    : [ "Dot", {"radius": 10} ],
       PaintStyle  : { strokeWidth: 1, stroke: "black"},
    });
+
+   var EndpointOptions = {
+      isSource: true,
+      isTarget: true,
+      hoverPaintStyle: {
+         fill: "red",
+         outlineStroke: "white",
+         outlineWidth: 2
+      },
+      connectorHoverStyle: {
+         stroke: "red",
+         strokeWidth: 4
+      },
+   };
 
    jsPlumb.draggable($(".pdu"));
 
@@ -19,19 +34,7 @@ jsPlumb.ready(function() {
          if ( $(this).attr('id') in excludes )
             return;
 
-         endpoints[$(this).attr('id')] = jsPlumb.addEndpoint( this, {
-            isSource: true,
-            isTarget: true,
-            hoverPaintStyle: {
-               fill: "red",
-               outlineStroke: "white",
-               outlineWidth: 2
-            },
-            connectorHoverStyle: {
-               stroke: "red",
-               strokeWidth: 4
-            },
-         });
+         endpoints[$(this).attr('id')] = jsPlumb.addEndpoint(this,EndpointOptions);
       });
 
       $.each(connections, function( src, dst ) {
@@ -68,7 +71,7 @@ jsPlumb.ready(function() {
       jsPlumb.recalculateOffsets(this);
    });
 
-   $("input").click(function( event ) {
+   $("input").click(function(event) {
       var conn = {};
 
       $.each(jsPlumb.getConnections(), function (idx, connection) {
@@ -87,5 +90,29 @@ jsPlumb.ready(function() {
          type : 'POST',
          data : conn
       });
+   });
+
+   // Adds "TOADD" number of outlets to a pdu
+   $(".plus_button").click(function() {
+      var TOADD = 5;
+      var _parent = $(this).parent();
+      var arr = _parent.find(".outlet").last().attr("id").split("_");
+      var last_outlet = parseInt(arr[2]);
+      last_outlet++;
+
+      jsPlumb.batch(function() {
+         for (i = last_outlet; i < last_outlet + TOADD; i++){
+            var n = document.createElement("span");
+            $(n).addClass("num");
+            $(n).text(i);
+            var c = document.createElement("div");
+            $(c).addClass("outlet");
+            $(c).attr("id", arr[0] + "_" + arr[1] + "_" + i);
+            $(c).append(n);
+            _parent.append(c);
+            endpoints[$(c).attr("id")] = jsPlumb.addEndpoint($(c),EndpointOptions);
+         }
+      });
+
    });
 });

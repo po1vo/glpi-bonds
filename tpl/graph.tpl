@@ -12,11 +12,13 @@
       <script type='text/javascript' src="<?php echo $CFG_GLPI['root_doc']; ?>/plugins/bonds/js/main.js"></script>
    </head>
 <body>
-<ul class="legend">
-<li>You can move PDUs as you like</li>
-<li>Double click a PDU to change the order of outlets (buggy)</li>
-<li>Inactive outlets mean the outlet is connected to a device beyond this scope</li>
-</ul>
+   <div class="block_help">Help
+      <ul class="tooltiptext">
+         <li>You can move PDUs as you like</li>
+         <li>Double click a PDU to change the order of outlets (buggy)</li>
+         <li>Inactive outlets mean the outlet is connected to a device beyond this scope</li>
+      </ul>
+   </div>
 <table class="rack">
    <tr>
       <th colspan="<?php echo $this->max_outlets + 2; ?>">
@@ -77,10 +79,11 @@
    <tr><th colspan="<?php echo $this->max_outlets + 2; ?>"><input type="submit" value="Save Changes" /></th></tr>
 </table>
 <?php
-   $j = 1;
+   $m = 25;
+   $side = "left";
    foreach ($this->pdus as $key => $pdu) {
 ?>
-<div class="pdu" style="top: 10em; left:<?php echo $j*4; ?>em;">
+<div class="pdu" name="NetworkEquipment_<?php echo $pdu['id']; ?>" style="top: 5em; left:<?php echo $m; ?>%;">
    <div class="block_title"><?php echo $pdu['name']; ?></div>
 <?php
       for ($i = $pdu['min_outlet_id']; $i <= $pdu['max_outlet_id']; $i++) {
@@ -89,9 +92,13 @@
 <?php
       }
 ?>
+   <div class="plus_button">+</div>
 </div>
 <?php
-      $j++;
+      $side = ($side == "left") ? "right" : "left";
+      $m = 100 - $m;
+      if ($side == "left")
+         $m += 5;
    }
 ?>
 </body>

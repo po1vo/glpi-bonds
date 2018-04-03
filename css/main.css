@@ -66,9 +66,6 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
    position: relative;
    font-size: 1em;
    pointer-events: none;
-   display: inline-block;
-   width: 100%;
-   text-align: center;
 }
 
 .block_title {
@@ -83,6 +80,7 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
 .outlet {
    width:  1.5em;
    height: 1.5em;
+   text-align: center;
 }
 
 .legend {
@@ -94,9 +92,40 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
 }
 
 .jtk-connector {
-  z-index: 1;
+   z-index: 1;
 }
 
 .jtk-endpoint {
-  z-index: 2;
+   z-index: 2;
+}
+
+.plus_button {
+   position: absolute;
+   bottom: -1.3em;
+   width: 100%;
+   text-align: center;
+}
+
+.block_help {
+   border-bottom: 1px dotted red;
+   display: inline-block;
+}
+
+.block_help .tooltiptext {
+    visibility: hidden;
+    background-color: white;
+    text-align: left;
+    padding: 1em;
+    margin: 1em;
+    border: 1px dotted black;
+    position: absolute;
+    z-index: 1;
+}
+
+.block_help:hover .tooltiptext {
+    visibility: visible;
+}
+
+ul {
+   list-style: none;
 }
