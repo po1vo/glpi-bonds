@@ -83,13 +83,14 @@
    $m = 25;
    $side = "left";
    foreach ($this->pdus as $key => $pdu) {
+      extract($pdu, EXTR_OVERWRITE);
 ?>
-<div class="pdu" name="NetworkEquipment_<?php echo $pdu['id']; ?>" style="top: 5em; left:<?php echo $m; ?>%;">
-   <div class="block_title"><?php echo $pdu['name']; ?></div>
+<div class="pdu" name="NetworkEquipment_<?php echo $id; ?>" style="top: 5em; left:<?php echo $m; ?>%;">
+   <div class="block_title"><span url="<?php echo $url; ?>"><?php echo $name; ?></span></div>
 <?php
-      for ($i = $pdu['min_outlet_id']; $i <= $pdu['max_outlet_id']; $i++) {
+      for ($i = $min_outlet_id; $i <= $max_outlet_id; $i++) {
 ?>
-   <div class="outlet" id="NetworkEquipment_<?php echo $pdu['id']; ?>_<?php echo $i; ?>"><span class="num"><?php echo $i; ?></span></div>
+   <div class="outlet" id="NetworkEquipment_<?php echo $id; ?>_<?php echo $i; ?>"><span class="num"><?php echo $i; ?></span></div>
 <?php
       }
 ?>

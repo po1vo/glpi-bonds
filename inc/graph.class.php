@@ -200,6 +200,7 @@ class PluginBondsGraph extends CommonDBTM {
          'id'            => $param['id'],
          'name'          => $param['name'],
          'class'         => 'NetworkEquipment',
+         'url'           => Toolbox::getItemTypeFormURL("NetworkEquipment")."?id=".$param["id"],
          'max_outlet_id' => $max_outlet_id,
          'min_outlet_id' => $min_outlet_id
       );

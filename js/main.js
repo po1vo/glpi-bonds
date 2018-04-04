@@ -25,6 +25,9 @@ jsPlumb.ready(function() {
    };
 
    jsPlumb.draggable($(".pdu"));
+   $(".plus_button").mousedown(function(e){
+      e.stopPropagation();
+   });
 
    var conn4Color;
    endpoints = {};
@@ -115,8 +118,9 @@ jsPlumb.ready(function() {
       });
    });
 
-   $(".device_name span").dblclick(function(e){
+   $(".device_name span, .block_title span").dblclick(function(e){
       e.preventDefault();
+      e.stopPropagation();
       var url = $(this).attr('url');
       window.open(url, '_blank');
    });

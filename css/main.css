@@ -75,6 +75,7 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
    letter-spacing: 2em;
    width: 1em;
    word-wrap: break-word;
+   cursor: default;
 }
 
 .outlet {
