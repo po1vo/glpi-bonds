@@ -44,7 +44,7 @@ jsPlumb.ready(function() {
          if ( src in excludes || dst in excludes )
             return;
 
-         conn4Color = '#'+(Math.random()).toString(16).substr(2,6);
+         conn4Color = '#' + ("000000" + Math.floor(Math.random() * 0xCCCCCC).toString(16)).substr(-6);
 
          endpoints[src].setPaintStyle({ fill: conn4Color });
          endpoints[dst].setPaintStyle({ fill: conn4Color });
