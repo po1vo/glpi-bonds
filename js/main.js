@@ -93,6 +93,8 @@ jsPlumb.ready(function() {
          type : 'POST',
          data : conn
       });
+
+      location.reload();
    });
 
    // Adds "TOADD" number of outlets to a pdu
