@@ -34,29 +34,15 @@ if(!isset($_GET["id"])) $_GET["id"] = "";
 $PluginBondsBond = new PluginBondsBond();
 
 if (isset ($_POST["add"])) {
-
    if ($PluginBondsBond->canCreate())
       $PluginBondsBond->addBond($_POST);
    Html::back();
-   
 } else if (isset ($_POST["delete"])) {
-
-   if ($PluginBondsBond->canCreate()) {
+   if ($PluginBondsBond->canDelete()) {
       foreach ($_POST["item"] as $key => $val) {
-            $input = array('id' => $key);
-            if ($val==1) {
-               $PluginBondsBond->deleteBond($input);
-            }
-         }
-   }
-
-   Html::back();
-   
-} else if (isset ($_POST["deleteSpec"])) {
-   foreach ($_POST["item"] as $key => $val) {
-      $input = array('id' => $key);
-      if ($val==1) {
-         $PluginBondsBond->deleteBond($input);
+         $input = array('id' => $key);
+         if ($val==1)
+            $PluginBondsBond->deleteBond($input);
       }
    }
    Html::back();
@@ -64,7 +50,7 @@ if (isset ($_POST["add"])) {
    Html::header(PluginBondsBond::getTypeName(2),'',"plugins","bonds");
 
    $PluginBondsBond->showForm($_GET["id"], array('target' => $CFG_GLPI['root_doc']."/plugins/bonds/front/connection.form.php"));
-   
+
    Html::footer();
 }
 

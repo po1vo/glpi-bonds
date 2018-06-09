@@ -5,7 +5,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginBondsBond extends CommonDBTM {
-   static $types = array( 'Computer','NetworkEquipment','Peripheral' );
+   static $types = [ 'Computer','NetworkEquipment','Peripheral' ];
 
 
    static function getTypeName($nb = 0) {
@@ -19,6 +19,11 @@ class PluginBondsBond extends CommonDBTM {
 
 
    static function canView() {
+      return true;
+   }
+
+
+   static function canDelete() {
       return true;
    }
 
@@ -43,7 +48,7 @@ class PluginBondsBond extends CommonDBTM {
 
       global $CFG_GLPI, $DB;
 
-      $self=new self();
+      $self = new self;
       $rand = mt_rand();
 
       echo "<form id='add_bond_form' name='add_bond_form' method='POST' action='" . $self->getFormURL() ."'>";
@@ -58,7 +63,7 @@ class PluginBondsBond extends CommonDBTM {
          Connect [outlet_types]
       */
 
-      _e('Connect');
+      echo __('Connect');
       echo "&nbsp;";
 
       $outlet_types = array_combine(self::listOutletTypes(), self::listOutletTypes());
@@ -67,7 +72,7 @@ class PluginBondsBond extends CommonDBTM {
       Dropdown::showFromArray(
          "outlet_type",
          $outlet_types,
-         array( 'rand' => $rand, 'width' => 'auto' )
+         [ 'rand' => $rand, 'width' => 'auto' ]
       );
 
 echo <<< EOT
@@ -101,14 +106,14 @@ EOT;
          outlet # [outlet_id]
       */
 
-      _e('outlet #');
+      echo __('outlet #');
       echo "&nbsp;";
       echo "<span id='show_outlet_id$rand'>";
 
       Dropdown::showFromArray(
          "outlet_id", 
-         array( '0' => Dropdown::EMPTY_VALUE ),
-         array( 'rand' => $rand, 'width' => 'auto' )
+         [ '0' => Dropdown::EMPTY_VALUE ],
+         [ 'rand' => $rand, 'width' => 'auto' ]
       );
 
       echo "</span>";
@@ -117,7 +122,7 @@ EOT;
       /*
          to [foreign_asset_type]
       */
-      _e('to');
+      echo __('to');
       echo "&nbsp;";
 
       $foreign_asset_types = array_combine(self::getAssetClasses(), self::getAssetClasses());
@@ -126,14 +131,14 @@ EOT;
       Dropdown::showFromArray(
          "foreign_asset_type", 
          $foreign_asset_types,
-         array( 'rand' => $rand, 'width' => '10em' )
+         [ 'rand' => $rand, 'width' => '10em' ]
       );
 
-      $params = array(
+      $params = [
          'idtable' => '__VALUE__',
          'rand'    => $rand,
-         'name'  => 'foreign_asset_id'
-      );
+         'name'    => 'foreign_asset_id'
+      ];
 
       Ajax::updateItemOnSelectEvent(
          "dropdown_foreign_asset_type$rand",
@@ -157,7 +162,7 @@ EOT;
 
 
       echo    "</td>";
-      echo    "<td><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'></td>\n";
+      echo    "<td width=\"1%\"><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'></td>\n";
       echo   '</tr>';
       echo  '</table>';
       echo '</div>';
@@ -165,18 +170,20 @@ EOT;
 
 
       echo "<form id='bonds$rand' name='bonds$rand' method='POST' action='" . $self->getFormURL() ."'>";
-      echo '<div>';
+      //echo '<div>';
       echo  '<table class="tab_cadre_fixe">';
-      echo   '<tr class="tab_bg_2">';
-      echo    '<th width="10"></th>';
-      echo    '<th width="1%">' . __('Outlet', 'bonds') . '</th>';
-      echo    '<th>' . __('Type', 'bonds') . '</th>';
-      echo    '<th>' . __('Connected to', 'bonds') . '</th>';
-      echo    '<th width="1%">' . __('Outlet', 'bonds') . '</th>';
-      echo    '<th>' . __('Serial', 'bonds') . '</th>';
-      echo    '<th>' . __('Type', 'bonds') . '</th>';
-      echo    '<th>' . __('Model', 'bonds') . '</th>';
-      echo   '<th>' . __('Location', 'bonds') . '</th>';
+      echo   '<tr class="tab_bg_1">';
+      echo    '<td class="subheader">';
+      echo Html::getCheckAllAsCheckbox("bonds$rand", $rand);
+      echo    '</td>';
+      echo    '<td class="subheader" width="1%">' . __('Outlet', 'bonds') . '</td>';
+      echo    '<td class="subheader">' . __('Type', 'bonds') . '</td>';
+      echo    '<td class="subheader">' . __('Connected to', 'bonds') . '</td>';
+      echo    '<td class="subheader" width="1%">' . __('Outlet', 'bonds') . '</td>';
+      echo    '<td class="subheader">' . __('Serial', 'bonds') . '</td>';
+      echo    '<td class="subheader">' . __('Type', 'bonds') . '</td>';
+      echo    '<td class="subheader">' . __('Model', 'bonds') . '</td>';
+      echo    '<td class="subheader">' . __('Location', 'bonds') . '</td>';
       echo  '</tr>';
 
       $n = 1;
@@ -192,11 +199,14 @@ EOT;
          echo '</tr>';
          $n++;
       }
-      echo '</table>';
-      echo '</div>';
 
-      Html::openArrowMassives("bonds$rand",true);
-      Html::closeArrowMassives(array('delete' => _sx('button','Delete')));
+      echo '</table>';
+      echo '<table class="tab_cadre_fixe"><tr><td class="left">';
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left.png' alt=''>";
+      echo "<input type='submit' name='delete' value=\"".
+         _sx('button', 'Delete')."\" class='submit'>";
+      echo '</td></tr>';
+
       Html::closeForm();
    }
 
@@ -225,7 +235,7 @@ EOT;
 
 
    static function getAssetClasses() {
-      static $types = array( 'Computer','NetworkEquipment','Peripheral' );
+      static $types = [ 'Computer','NetworkEquipment','Peripheral' ];
       return $types;
    }
 
@@ -255,7 +265,7 @@ EOT;
 
 
    function addBond(array $input) {
-      static $fields = array(
+      static $fields = [
          'asset_type',
          'asset_id',
          'outlet_id',
@@ -263,9 +273,9 @@ EOT;
          'foreign_asset_type',
          'foreign_asset_id',
          'foreign_outlet_id',
-      );
-      $source = array();
-      $target = array();
+      ];
+      $source = [];
+      $target = [];
 
       foreach($fields as $field) {
          if (!isset($input[$field]) || empty($input[$field]))
@@ -340,14 +350,14 @@ EOT;
             continue;
  
          $data = array_combine(
-            array(
+            [
                'asset_type',
                'asset_id',
                'outlet_id',
                'foreign_asset_type',
                'foreign_asset_id',
                'foreign_outlet_id'
-            ),
+            ],
             $d
          );
          $data['outlet_type'] = 'Power';
