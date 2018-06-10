@@ -170,37 +170,67 @@ EOT;
 
 
       echo "<form id='bonds$rand' name='bonds$rand' method='POST' action='" . $self->getFormURL() ."'>";
-      //echo '<div>';
-      echo  '<table class="tab_cadre_fixe">';
-      echo   '<tr class="tab_bg_1">';
-      echo    '<td class="subheader">';
-      echo Html::getCheckAllAsCheckbox("bonds$rand", $rand);
-      echo    '</td>';
-      echo    '<td class="subheader" width="1%">' . __('Outlet', 'bonds') . '</td>';
-      echo    '<td class="subheader">' . __('Type', 'bonds') . '</td>';
-      echo    '<td class="subheader">' . __('Connected to', 'bonds') . '</td>';
-      echo    '<td class="subheader" width="1%">' . __('Outlet', 'bonds') . '</td>';
-      echo    '<td class="subheader">' . __('Serial', 'bonds') . '</td>';
-      echo    '<td class="subheader">' . __('Type', 'bonds') . '</td>';
-      echo    '<td class="subheader">' . __('Model', 'bonds') . '</td>';
-      echo    '<td class="subheader">' . __('Location', 'bonds') . '</td>';
-      echo  '</tr>';
 
-      $n = 1;
+      $table = new HTMLTableMain();
+      $superHeader = $table->addHeader('superheader','superheader');
+      $t_group = $table->createGroup("ololo","ololo");
+
+      $c_checkbox  = $t_group->addHeader('checkbox', Html::getCheckAllAsCheckbox("bonds$rand", $rand), $superHeader);
+      $c_outlet    = $t_group->addHeader('outlet', __('Outlet', 'bonds'), $superHeader);
+      $c_type      = $t_group->addHeader('type', __('Type', 'bonds'), $superHeader);
+      $c_connected = $t_group->addHeader('connected', __('Connected to', 'bonds'), $superHeader);
+      $c_outlet2   = $t_group->addHeader('outlet2', __('Outlet', 'bonds'), $superHeader);
+      $c_serial    = $t_group->addHeader('serial', __('Serial', 'bonds'), $superHeader);
+      $c_type2     = $t_group->addHeader('type2', __('Type', 'bonds'), $superHeader);
+      $c_model     = $t_group->addHeader('model', __('Model', 'bonds'), $superHeader);
+      $c_location  = $t_group->addHeader('location', __('Location', 'bonds'), $superHeader);
+
+      foreach([$c_checkbox, $c_outlet, $c_type, $c_connected, $c_outlet2, $c_serial, $c_type2, $c_model, $c_location] as $i)
+         $i->setHTMLClass('center');
+
       $data = $self->getBondsFromIdAndType( $item->getID(), $item->getType(), "ORDER BY `outlet_id`" );
-      foreach($data as $key => $assoc) {
-         echo '<tr class="tab_bg_'.(($n%2==0)?"2":"1").'">';
-         echo '<td><input type="checkbox" name="item['.$key.']" value="1"></td>';
-         echo '<td class="center">'.$assoc['outlet_id'].'</td>';
-         echo '<td class="center">'.$assoc['outlet_type'].'</td>';
+      foreach($data as $k => $v) {
+         $t_row = $t_group->createRow();
 
-         $self->showLine($assoc['connected_to']);
+         $t_row->addCell($c_checkbox, Html::getCheckBox([
+            'name'  => "item[$k]",
+            'rand'  => $rand,
+         ]));
 
-         echo '</tr>';
-         $n++;
+         $t_row->addCell($c_outlet, $v['outlet_id']);
+         $t_row->addCell($c_type,   $v['outlet_type']);
+
+         $self->getFromDB($v['connected_to']);
+
+         $asset_id          = $self->fields['asset_id'];
+         $asset_class       = $self->fields['asset_type'];
+         $asset_url         = Toolbox::getItemTypeFormURL($asset_class);
+         $asset_table       = getTableForItemType($asset_class);
+         $asset_model_table = getTableForItemType($asset_class."Model");
+         $asset_model_field = getForeignKeyFieldForTable($asset_model_table);
+
+         $class = new $asset_class;
+         $class->getFromDB($asset_id);
+
+         $t_row->addCell(
+            $c_connected,
+            sprintf('<a href="%s?id=%s">%s</a>',
+               $asset_url, $asset_id, Dropdown::getDropdownName($asset_table, $asset_id))
+         );
+         $t_row->addCell($c_outlet2,  $self->getField('outlet_id'));
+         $t_row->addCell($c_serial,   $class->getField('serial'));
+         $t_row->addCell($c_type2,    $class::getTypeName(2));
+         $t_row->addCell($c_model,    Dropdown::getDropdownName($asset_model_table,$class->getField($asset_model_field)));
+         $t_row->addCell($c_location, Dropdown::getDropdownName("glpi_locations",$class->getField("locations_id")));
       }
 
-      echo '</table>';
+      $table->display([
+         'display_thead' => false,
+         'display_tfoot' => false,
+         'display_super_for_each_group' => false,
+         'display_title_for_each_group' => false
+      ]);
+
       echo '<table class="tab_cadre_fixe"><tr><td class="left">';
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left.png' alt=''>";
       echo "<input type='submit' name='delete' value=\"".
@@ -208,29 +238,6 @@ EOT;
       echo '</td></tr>';
 
       Html::closeForm();
-   }
-
-
-   function showLine($id) {
-      $this->getFromDB($id);
-
-      $asset_id = $this->fields['asset_id'];
-      $asset_class = $this->fields['asset_type'];
-      $asset_url = Toolbox::getItemTypeFormURL($asset_class);
-      $asset_model_table = getTableForItemType($asset_class."Model");
-      $asset_model_field = getForeignKeyFieldForTable($asset_model_table);
-
-      $class = new $asset_class;
-      $class->getFromDB($asset_id);
-
-      echo '<td class="center"><a href="'.$asset_url.'?id='.$asset_id.'">'.
-         Dropdown::getDropdownName( getTableForItemType($asset_class), $asset_id) .
-       '</a></td>';
-      echo '<td class="center">'.$this->getField('outlet_id').'</td>';
-      echo '<td class="center">'.$class->getField('serial').'</td>';
-      echo '<td class="center">'.$class::getTypeName(2).'</td>';
-      echo '<td class="center">'.Dropdown::getDropdownName($asset_model_table,$class->getField($asset_model_field)).'</td>';
-      echo '<td class="center">'.Dropdown::getDropdownName("glpi_locations",$class->getField("locations_id")).'</td>';
    }
 
 
