@@ -88,7 +88,8 @@
 <div class="pdu" name="NetworkEquipment_<?php echo $id; ?>" style="top: 5em; left:<?php echo $m; ?>%;">
    <div class="block_title"><span url="<?php echo $url; ?>"><?php echo $name; ?></span></div>
 <?php
-      for ($i = $min_outlet_id; $i <= $max_outlet_id; $i++) {
+      $range = ($reverse) ? range($max_outlet_id, $min_outlet_id) : range($min_outlet_id, $max_outlet_id);
+      foreach ($range as $i) {
 ?>
    <div class="outlet" id="NetworkEquipment_<?php echo $id; ?>_<?php echo $i; ?>"><span class="num"><?php echo $i; ?></span></div>
 <?php

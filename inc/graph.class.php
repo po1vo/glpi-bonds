@@ -16,6 +16,7 @@ class PluginBondsGraph extends CommonDBTM {
    const MAX_OUTLET_ID = 24;
    const MIN_OUTLET_ID = 1;
    const MAX_OUTLETS = 2;
+   const aHigh2LowModels = ['AP8959NA3'];
    private $PluginRacksRack;
    private $rack;
    private $pdus;
@@ -165,6 +166,8 @@ class PluginBondsGraph extends CommonDBTM {
    private function getPdu($param) {
       global $DB;
 
+      $id = $param['id'];
+
       $PluginBondsBond = new PluginBondsBond();
       $max_outlet_id = self::MAX_OUTLET_ID;
       $min_outlet_id = self::MIN_OUTLET_ID;
@@ -175,7 +178,7 @@ class PluginBondsGraph extends CommonDBTM {
             $PluginBondsBond->getTable(),
             $PluginBondsBond->getTable(),
             'NetworkEquipment',
-            $param["id"]
+            $id
          )
       );
 
@@ -188,7 +191,7 @@ class PluginBondsGraph extends CommonDBTM {
          }
 
          $this->pdu_bonds[$data['foreign_asset_type'].'_'.$data['foreign_asset_id'].'_'.$data['foreign_outlet_id']] =
-            'NetworkEquipment_'.$param['id'].'_'.$data['outlet_id'];
+            'NetworkEquipment_' . $id . '_' . $data['outlet_id'];
       }
 
       if ($max_outlet_id > 24 && $max_outlet_id <= 42)
@@ -196,13 +199,21 @@ class PluginBondsGraph extends CommonDBTM {
       else if ($max_outlet_id <= 24)
          $max_outlet_id = 24;
 
-      $this->pdus[$param["id"]] = array(
-         'id'            => $param['id'],
+      $pdu = new NetworkEquipment();
+      $pdu->getFromDB($id);
+      $pduModel = new NetworkEquipmentModel();
+      $pduModel->getFromDB($pdu->fields['networkequipmentmodels_id']);
+
+      $reverse = (in_array($pduModel->fields['name'], self::aHigh2LowModels)) ? true : false;
+
+      $this->pdus[$id] = array(
+         'id'            => $id,
          'name'          => $param['name'],
          'class'         => 'NetworkEquipment',
-         'url'           => Toolbox::getItemTypeFormURL("NetworkEquipment")."?id=".$param["id"],
+         'url'           => sprintf("%s?id=%d", Toolbox::getItemTypeFormURL("NetworkEquipment"), $id),
          'max_outlet_id' => $max_outlet_id,
-         'min_outlet_id' => $min_outlet_id
+         'min_outlet_id' => $min_outlet_id,
+         'reverse'       => $reverse
       );
    }
 }
