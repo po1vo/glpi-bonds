@@ -13,9 +13,9 @@ class PluginBondsGraph extends CommonDBTM {
          AND `t1`.`asset_type`='%s'
          AND `t1`.`asset_id`=%d";
 
-   const MAX_OUTLET_ID = 24;
+   const OUTLET_RANGE_SMALL = 24;
+   const OUTLET_RANGE_LARGE = 42;
    const MIN_OUTLET_ID = 1;
-   const MAX_OUTLETS = 2;
    const aHigh2LowModels = ['AP8959NA3'];
    private $PluginRacksRack;
    private $rack;
@@ -169,7 +169,7 @@ class PluginBondsGraph extends CommonDBTM {
       $id = $param['id'];
 
       $PluginBondsBond = new PluginBondsBond();
-      $max_outlet_id = self::MAX_OUTLET_ID;
+      $max_outlet_id = self::OUTLET_RANGE_SMALL;
       $min_outlet_id = self::MIN_OUTLET_ID;
 
       $result = $DB->query(
@@ -194,10 +194,11 @@ class PluginBondsGraph extends CommonDBTM {
             'NetworkEquipment_' . $id . '_' . $data['outlet_id'];
       }
 
-      if ($max_outlet_id > 24 && $max_outlet_id <= 42)
-         $max_outlet_id = 42;
-      else if ($max_outlet_id <= 24)
-         $max_outlet_id = 24;
+      if ($max_outlet_id > self::OUTLET_RANGE_SMALL
+            && $max_outlet_id <= self::OUTLET_RANGE_LARGE)
+         $max_outlet_id = self::OUTLET_RANGE_LARGE;
+      else if ($max_outlet_id <= self::OUTLET_RANGE_SMALL)
+         $max_outlet_id = self::OUTLET_RANGE_SMALL;
 
       $pdu = new NetworkEquipment();
       $pdu->getFromDB($id);
