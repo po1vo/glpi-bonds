@@ -38,9 +38,9 @@
       <td class="device_name"><span url="<?php echo $url; ?>"><?php echo $name; ?></span></td>
 <?php
          if (isset($outlets) && count($outlets) > 0) {
-            $outlets = array_unique( array_merge(range(1, self::MAX_OUTLETS), $outlets));
+            $outlets = array_unique( array_merge(range(1, self::PSU_PER_DEVICE), $outlets));
          } else {
-            $outlets = range(1, self::MAX_OUTLETS);
+            $outlets = range(1, self::PSU_PER_DEVICE);
          }
 
          for ($k = 0; $k < ($this->max_outlets - count($outlets)); $k++) {

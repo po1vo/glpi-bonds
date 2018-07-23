@@ -16,6 +16,7 @@ class PluginBondsGraph extends CommonDBTM {
    const OUTLET_RANGE_SMALL = 24;
    const OUTLET_RANGE_LARGE = 42;
    const MIN_OUTLET_ID = 1;
+   const PSU_PER_DEVICE = 2;
    const aHigh2LowModels = ['AP8959NA3'];
    private $PluginRacksRack;
    private $rack;
