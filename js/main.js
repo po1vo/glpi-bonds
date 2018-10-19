@@ -92,9 +92,10 @@ jsPlumb.ready(function() {
          url  : "../ajax/update.php",
          type : 'POST',
          data : conn
+      }
+      .always(function() {
+         location.reload();
       });
-
-      location.reload();
    });
 
    // Adds "TOADD" number of outlets to a pdu
